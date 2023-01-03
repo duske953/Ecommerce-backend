@@ -3,7 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const Cryptr = require("cryptr");
 const createError = require("http-errors");
-// const date = require("date-and-time");
+const date = require("date-and-time");
 const sendEmail = require("../utils/sendEmail");
 const { v4: uuidv4 } = require("uuid");
 const cryptr = new Cryptr(process.env.CRYPT_SECRET);
@@ -143,7 +143,7 @@ userSchema.method("forgotPassword", async function () {
   const now = new Date();
   this.passwordResetToken = randomToken.generate(100);
   const token = cryptr.encrypt(this.passwordResetToken);
-  // this.passwordExpiresDate = date.addMinutes(now, 10);
+  this.passwordExpiresDate = date.addMinutes(now, 10);
   await sendEmail(
     this.Email,
     "Reset your password",
