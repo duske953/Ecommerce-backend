@@ -20,7 +20,8 @@ function sendCookie(req, res, token) {
   const cookies = new Cookies(req, res, {
     keys: keys,
     secure: true,
-    sameSite: false,
+    sameSite: true,
+    domain: ".vercel.app",
   });
   return cookies.set("jwt", token);
 }
