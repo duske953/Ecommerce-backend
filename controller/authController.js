@@ -19,7 +19,7 @@ async function signJwt(id) {
 function sendCookie(req, res, token) {
   const cookies = new Cookies(req, res, {
     keys: keys,
-    secure: false,
+    secure: true,
     httpOnly: false,
     path: "http://localhost:5173",
   });
