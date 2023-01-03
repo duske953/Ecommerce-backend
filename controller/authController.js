@@ -17,7 +17,11 @@ async function signJwt(id) {
 }
 //SENDING COOKIES
 function sendCookie(req, res, token) {
-  const cookies = new Cookies(req, res, { keys: keys });
+  const cookies = new Cookies(req, res, {
+    keys: keys,
+    secure: true,
+    domain: ".vercel.app",
+  });
   return cookies.set("jwt", token);
 }
 //SENDING RESPONSES
