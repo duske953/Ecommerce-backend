@@ -34,7 +34,7 @@ exports.getProducts = catchAsync(async (req, res, next) => {
     },
   ]);
 
-  res.status(200).json({ msg: "eloho" });
+  sendResponse(res, 200, "products loaded", { headphones, laptops });
 });
 
 exports.getProduct = catchAsync(async (req, res, next) => {
