@@ -17,13 +17,7 @@ async function signJwt(id) {
 }
 //SENDING COOKIES
 function sendCookie(req, res, token) {
-  const cookies = new Cookies(req, res, {
-    keys: keys,
-    secure: true,
-    path: "/",
-    sameSite: "Lax",
-    domain: "https://oek-ecommerce-backend.vercel.app",
-  });
+  const cookies = new Cookies(req, res, { keys: keys });
   return cookies.set("jwt", token);
 }
 //SENDING RESPONSES
