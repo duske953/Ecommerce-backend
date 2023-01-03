@@ -4,7 +4,6 @@ const utilityController = require("./utilityController");
 const axios = require("axios");
 const createError = require("http-errors");
 const product = require("../model/productModel");
-const { create } = require("../model/productModel");
 const user = require("../model/userModel");
 
 function sendResponse(res, code, message, data) {
