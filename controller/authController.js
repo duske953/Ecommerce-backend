@@ -7,7 +7,6 @@ const users = require("../model/userModel");
 const createError = require("http-errors");
 const user = require("../model/userModel");
 const catchAsync = require("../utils/catchAsync");
-const { create } = require("../model/productModel");
 const keys = [process.env.JWT_SECRET];
 
 async function signJwt(id) {

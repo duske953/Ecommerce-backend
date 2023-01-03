@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const randomToken = require("rand-token");
 const bcrypt = require("bcryptjs");
 const Cryptr = require("cryptr");
 const createError = require("http-errors");
