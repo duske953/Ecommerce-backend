@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Cryptr = require("cryptr");
+// const Cryptr = require("cryptr");
 const { promisify } = require("util");
 const cryptr = new Cryptr(process.env.CRYPT_SECRET);
 const Cookies = require("cookies");
