@@ -20,8 +20,9 @@ function sendCookie(req, res, token) {
   const cookies = new Cookies(req, res, {
     keys: keys,
     secure: true,
-    httpOnly: false,
-    path: "http://localhost:5173",
+    path: "/",
+    sameSite: "Lax",
+    domain: "https://oek-ecommerce-backend.vercel.app",
   });
   return cookies.set("jwt", token);
 }
