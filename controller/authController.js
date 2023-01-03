@@ -20,6 +20,7 @@ function sendCookie(req, res, token) {
   const cookies = new Cookies(req, res, {
     keys: keys,
     secure: false,
+    httpOnly: false,
     path: "http://localhost:5173",
   });
   return cookies.set("jwt", token);
