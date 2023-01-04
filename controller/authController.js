@@ -20,12 +20,12 @@ function sendCookie(req, res, token) {
   const cookies = new Cookies(req, res, {
     keys,
   });
-  return cookies.set("jwt", token, {
+  return cookies.set("ken", token, {
     domain: ".eloho.herokuapp.com",
     sameSite: "strict",
-    secure: true,
+    secure: false,
     path: "/",
-    httpOnly: true,
+    httpOnly: false,
   });
 }
 //SENDING RESPONSES
