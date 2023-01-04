@@ -31,6 +31,8 @@ process.on("unhandledRejection", (err) => {
   console.log(err.name, err.message);
   process.exit(1);
 });
+
+app.set("trust proxy", 1);
 app.use(compression());
 // app.use(
 //   helmet({

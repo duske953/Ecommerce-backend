@@ -22,8 +22,8 @@ function sendCookie(req, res, token) {
   });
   return cookies.set("jwt", token, {
     domain: ".ecommerce-frontend-duske953.vercel.app",
-    sameSite: "Strict",
-    secure: false,
+    sameSite: "none",
+    secure: true,
     path: "/",
     httpOnly: false,
   });
