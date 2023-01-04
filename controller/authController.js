@@ -22,7 +22,7 @@ function sendCookie(req, res, token) {
   });
   return cookies.set("jwt", token, {
     domain: ".ecommerce-frontend-gamma-seven.vercel.app",
-    sameSite: "strict",
+    sameSite: "none",
     secure: true,
     path: "/",
   });
