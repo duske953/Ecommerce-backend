@@ -25,7 +25,7 @@ function sendCookie(req, res, token) {
     sameSite: "strict",
     secure: true,
     path: "/",
-    httpOnly: false,
+    httpOnly: true,
   });
 }
 //SENDING RESPONSES
