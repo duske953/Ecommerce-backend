@@ -20,10 +20,10 @@ function sendCookie(req, res, token) {
   const cookies = new Cookies(req, res, {
     keys,
   });
-  return cookies.set("ken", token, {
+  return cookies.set("jwt", token, {
     domain: ".vercel.app",
     sameSite: "strict",
-    secure: false,
+    secure: true,
     path: "/",
     httpOnly: false,
   });
@@ -114,7 +114,7 @@ exports.checkUserCredentials = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const token = await signJwt(req.validUser._id);
   sendCookie(req, res, token);
-  sendResponse(res, 200, req.validUser, token, "Logged in afa wahk");
+  sendResponse(res, 200, req.validUser, token, "Logged in");
 });
 
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
