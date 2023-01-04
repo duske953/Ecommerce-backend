@@ -32,11 +32,11 @@ process.on("unhandledRejection", (err) => {
   process.exit(1);
 });
 app.use(compression());
-app.use(
-  helmet({
-    crossOriginResourcePolicy: false,
-  })
-);
+// app.use(
+//   helmet({
+//     crossOriginResourcePolicy: false,
+//   })
+// );
 app.use("/uploads/:id", express.static("public"));
 
 app.use(
