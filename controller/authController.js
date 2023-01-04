@@ -114,7 +114,7 @@ exports.checkUserCredentials = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const token = await signJwt(req.validUser._id);
   sendCookie(req, res, token);
-  sendResponse(res, 200, req.validUser, token, "Logged in");
+  sendResponse(res, 200, req.validUser, token, "Logged in afa");
 });
 
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
