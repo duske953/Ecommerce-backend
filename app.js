@@ -46,6 +46,7 @@ app.use(
       "http://localhost:5173",
       "http://localhost:3000",
       "https://ecommerce-frontend-gamma-seven.vercel.app",
+      "https://ecommerce-frontend-duske953.vercel.app",
     ],
     methods: ["GET", "POST", "DELETE", "PATCH"],
   })
