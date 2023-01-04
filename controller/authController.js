@@ -22,7 +22,7 @@ function sendCookie(req, res, token) {
   });
   return cookies.set("jwt", token, {
     domain: ".eloho.herokuapp.com",
-    sameSite: false,
+    sameSite: "strict",
     secure: true,
     path: "/",
     httpOnly: true,
