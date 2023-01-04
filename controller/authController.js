@@ -21,9 +21,10 @@ function sendCookie(req, res, token) {
     keys: keys,
   });
   return cookies.set("jwt", token, {
-    domain: ".vercel.app",
+    domain: ".ecommerce-frontend-gamma-seven.vercel.app",
     sameSite: "strict",
     secure: true,
+    path: "/",
   });
 }
 //SENDING RESPONSES
