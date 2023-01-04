@@ -21,7 +21,7 @@ function sendCookie(req, res, token) {
     keys,
   });
   return cookies.set("ken", token, {
-    domain: ".eloho.herokuapp.com",
+    domain: ".vercel.app",
     sameSite: "strict",
     secure: false,
     path: "/",
