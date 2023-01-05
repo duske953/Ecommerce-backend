@@ -33,7 +33,7 @@ process.on("unhandledRejection", (err) => {
 });
 
 app.set("trust proxy", 1);
-app.use(compression());
+// app.use(compression());
 // app.use(
 //   helmet({
 //     crossOriginResourcePolicy: false,
