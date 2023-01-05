@@ -8,6 +8,7 @@ const userRouter = require("./router/userRouter");
 const productRouter = require("./router/productRouter");
 const errorHandler = require("./controller/errorController");
 const helmet = require("helmet");
+const path = require("path");
 const compression = require("compression");
 (async function () {
   try {
@@ -33,13 +34,13 @@ process.on("unhandledRejection", (err) => {
 });
 
 app.set("trust proxy", 1);
-// app.use(compression());
-// app.use(
-//   helmet({
-//     crossOriginResourcePolicy: false,
-//   })
-// );
-app.use("/uploads/:id", express.static("public"));
+app.use(compression());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
+app.use("/uploads/:id", express.static(path.join(__dirname + "/public")));
 
 app.use(
   cors({
