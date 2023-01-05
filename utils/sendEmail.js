@@ -5,7 +5,11 @@ async function sendEmail(to, subject, html) {
   try {
     const transport = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
-      port: 2525,
+      port: 465,
+      connectionTimeout: +process.env.TIMED_OUT,
+      socketTimeout: +process.env.TIMED_OUT,
+      secure: true,
+      service: process.env.EMAIL_SERVICE,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD,

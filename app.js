@@ -40,7 +40,7 @@ app.use(
     crossOriginResourcePolicy: false,
   })
 );
-app.use("/uploads/:id", express.static(path.join(__dirname + "/public")));
+app.use("/uploads/:id", express.static(path.join(__dirname + "public")));
 
 app.use(
   cors({
