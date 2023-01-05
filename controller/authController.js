@@ -24,7 +24,7 @@ function sendCookie(req, res, token) {
     sameSite: "none",
     secure: true,
     path: "/",
-    httpOnly: false,
+    httpOnly: true,
   });
 }
 //SENDING RESPONSES
@@ -139,7 +139,7 @@ exports.protected = catchAsync(async (req, res, next) => {
 //LOGGING USERS OUT
 exports.logout = catchAsync(async (req, res, next) => {
   if (req.user) {
-    res.clearCookie("jwt");
+    res.clearCookie("jwt", { sameSite: "none", secure: true, path: "/" });
     sendResponse(res, 200, null, null, "Logged out");
   }
 });
