@@ -21,7 +21,6 @@ function sendCookie(req, res, token) {
     keys,
   });
   return cookies.set("jwt", token, {
-    domain: ".ecommerce-frontend-duske953.vercel.app/",
     sameSite: "none",
     secure: true,
     path: "/",
