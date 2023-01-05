@@ -5,6 +5,7 @@ const Cryptr = require("cryptr");
 const createError = require("http-errors");
 const date = require("date-and-time");
 const sendEmail = require("../utils/sendEmail");
+const randomToken = require("rand-token");
 const { v4: uuidv4 } = require("uuid");
 const cryptr = new Cryptr(process.env.CRYPT_SECRET);
 const userSchema = new mongoose.Schema({
