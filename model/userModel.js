@@ -129,7 +129,7 @@ userSchema.method("confirmAccount", async function () {
       "OEK needs you to verify your email address",
       returnHtml(
         `Hi there! <br> <br> <br> Thank you for signing up. <br> <br> To get you started, Please click <br> on the link below to confirm <br> your email address. It will only <br> take a couple of seconds. <br> <br> 
-        <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" href="${process.env.RELATIVE_URL_FRONTEND}/users/activate/${token}">Confirm Account</a> 
+        <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" href="https://tech-freak.vercel.app/users/activate/${token}">Confirm Account</a> 
         <br> <br> If you didn't initiate this request, <br> kindly disregard this email. <br> <br> Regards, <br> <br> OEK`
       )
     );
@@ -151,9 +151,8 @@ userSchema.method("forgotPassword", async function () {
     returnHtml(
       `Hi ${
         this.Name
-      }, <br> <br> <br>  A password reset for your account was requested. <br> Please click the link below to change your password. <br> <br> <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" href="${
-        process.env.RELATIVE_URL_FRONTEND
-      }/users/reset-password/${token}?id=${cryptr.encrypt(
+      }, <br> <br> <br>  A password reset for your account was requested. <br> Please click the link below to change your password. <br> <br> <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" 
+      href="https://tech-freak.vercel.app/users/reset-password/${token}?id=${cryptr.encrypt(
         this.Email
       )}">Confirm Account</a> <br><br>  Not that this link is valid for 10minutes. <br> After the time limit has expired, you will have to resubmit the request for a password reset <br><br> Regards, <br> <br> OEK.`
     )

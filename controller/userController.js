@@ -2,17 +2,11 @@ const users = require("../model/userModel");
 const catchAsync = require("../utils/catchAsync");
 const createError = require("http-errors");
 const multer = require("multer");
+const { GridFsStorage } = require("multer-gridfs-storage");
 const { v4: uuidv4 } = require("uuid");
 const DIR = "./public/";
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, DIR);
-  },
-  filename: (req, file, cb) => {
-    const fileName = file.originalname.toLowerCase().split(" ").join("-");
-    cb(null, fileName);
-  },
-});
+const url = `mongodb+srv://eloho:${process.env.MONGODB_PASSWORD}@ecommerce.7huagy2.mongodb.net/?retryWrites=true&w=majority`;
+const storage = new GridFsStorage({ url });
 
 exports.upload = multer({
   fileFilter: (req, file, cb) => {
@@ -62,7 +56,8 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.uploadImg = catchAsync(async (req, res, next) => {
-  // const img = `${process.env.RELATIVE_URL_BACKEND}/${req.file.destination}img/${req.file.filename}`;
+  console.log(req.file);
+  const img = `${process.env.RELATIVE_URL_BACKEND}/${req.file.destination}img/${req.file.filename}`;
   const url = req.protocol + "://" + req.get("host");
   req.user.Img = `${url}/uploads/${uuidv4()}/${req.file.filename}`;
   await req.user.save({ validateBeforeSave: false });

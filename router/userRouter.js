@@ -34,8 +34,8 @@ router
   .route("/sendMail")
   .post(authController.isActive, utiltyController.sendEMail);
 
-router
-  .route("/uploadImg")
-  .post(userController.upload.single("profileImg"), userController.uploadImg);
+// router
+//   .route("/uploadImg")
+//   .post(userController.upload.single("profileImg"), userController.uploadImg);
 
 module.exports = router;

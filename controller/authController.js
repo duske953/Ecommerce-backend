@@ -21,10 +21,9 @@ function sendCookie(req, res, token) {
     keys,
   });
   return cookies.set("jwt", token, {
-    sameSite: "none",
-    secure: true,
-    path: "/",
-    httpOnly: true,
+    // secure: false,
+    // path: "/",
+    // httpOnly: true,
   });
 }
 //SENDING RESPONSES

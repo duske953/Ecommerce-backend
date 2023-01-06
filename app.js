@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const mongoSanitize = require("express-mongo-sanitize");
 const userRouter = require("./router/userRouter");
 const productRouter = require("./router/productRouter");
 const errorHandler = require("./controller/errorController");
@@ -34,6 +35,7 @@ process.on("unhandledRejection", (err) => {
 });
 
 app.set("trust proxy", 1);
+app.use(mongoSanitize());
 app.use(compression());
 app.use(
   helmet({
@@ -48,6 +50,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://ecommerce-frontend-duske953.vercel.app",
+      "https://tech-freak.vercel.app",
     ],
     methods: ["GET", "POST", "DELETE", "PATCH"],
   })
@@ -63,6 +66,7 @@ app.use((req, res, next) => {
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
+
 app.use(errorHandler);
 
 app.listen(process.env.PORT || 3000, () => console.log("server started"));
