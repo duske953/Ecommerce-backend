@@ -73,7 +73,7 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
 
   await user.findOneAndUpdate(
     { _id: req.user.id },
-    { $push: { products: req.body.id } }
+    { $push: { products: { $each: req.body.id, $position: 0 } } }
   );
 
   await req.user.save({ validateBeforeSave: false });
