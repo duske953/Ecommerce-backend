@@ -124,7 +124,8 @@ exports.getProductsFromCart = catchAsync(async (req, res, next) => {
   const product = await user
     .findById(req.user.id)
     .populate("products")
-    .select("products");
+    .select("products")
+    .reverse();
   sendResponse(res, 200, "products from cart loaded", { product });
 });
 
