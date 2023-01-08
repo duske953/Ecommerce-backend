@@ -117,6 +117,9 @@ exports.searchProduct = catchAsync(async (req, res, next) => {
     .limit(8)
     .skip(+(req.query.page - 1) * 8);
 
+  if (searchedProduct.length === 0)
+    return next(createError(404, "The page you're looking for does not exist"));
+
   sendResponse(res, 200, "success", { searchedProduct });
 });
 
@@ -140,5 +143,8 @@ exports.getProductsFromCategory = catchAsync(async (req, res, next) => {
     })
     .limit(8)
     .skip(+(req.query.page - 1) * 8);
+
+  if (foundProducts.length === 0)
+    return next(createError(404, "The page you're looking for does not exist"));
   sendResponse(res, 200, "products fetched", { foundProducts });
 });
