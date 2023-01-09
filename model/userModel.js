@@ -70,6 +70,12 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 
+  EmailTokenExpires: {
+    type: Date,
+    select: false,
+    default: new Date(),
+  },
+
   passwordResetToken: {
     type: String,
     select: false,
@@ -124,13 +130,14 @@ userSchema.method("confirmAccount", async function () {
   try {
     this.EmailConfirmToken = randomToken.generate(100);
     const token = cryptr.encrypt(this.EmailConfirmToken);
+    this.EmailTokenExpires = date.addMinutes(new Date(), 10);
     await sendEmail(
       this.Email,
       "OEK needs you to verify your email address",
       returnHtml(
         `Hi there! <br> <br> <br> Thank you for signing up. <br> <br> To get you started, Please click <br> on the link below to confirm <br> your email address. It will only <br> take a couple of seconds. <br> <br> 
         <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" href="https://tech-freak.vercel.app/users/activate/${token}">Confirm Account</a> 
-        <br> <br> If you didn't initiate this request, <br> kindly disregard this email. <br> <br> Regards, <br> <br> OEK`
+        <br> Note that this link is valid for only 10minutes. <br> <br> If you didn't initiate this request, <br> kindly disregard this email. <br> <br> Regards, <br> <br> OEK`
       )
     );
   } catch (err) {
@@ -154,7 +161,7 @@ userSchema.method("forgotPassword", async function () {
       }, <br> <br> <br>  A password reset for your account was requested. <br> Please click the link below to change your password. <br> <br> <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" 
       href="https://tech-freak.vercel.app/users/reset-password/${token}?id=${cryptr.encrypt(
         this.Email
-      )}">Confirm Account</a> <br><br>  Not that this link is valid for 10minutes. <br> After the time limit has expired, you will have to resubmit the request for a password reset <br><br> Regards, <br> <br> OEK.`
+      )}">Reset Password</a> <br><br>  Note that this link is valid for 10minutes. <br> After the time limit has expired, you will have to resubmit the request for a password reset <br><br> Regards, <br> <br> OEK.`
     )
   );
 });

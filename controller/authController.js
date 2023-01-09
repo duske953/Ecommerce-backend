@@ -70,6 +70,7 @@ exports.activateAccount = catchAsync(async (req, res, next) => {
     );
   const user = await users.findOne({
     EmailConfirmToken: cryptr.decrypt(req.params.confirmToken),
+    EmailTokenExpires: { $gte: new Date() },
   });
   if (!user)
     return next(
@@ -78,6 +79,7 @@ exports.activateAccount = catchAsync(async (req, res, next) => {
   const token = await signJwt(user._id);
   user.active = true;
   user.EmailConfirmToken = undefined;
+  user.EmailTokenExpires = undefined;
   await user.save({ validateBeforeSave: false });
   sendCookie(req, res, token);
   sendResponse(res, 200, user, token, "Your account is now active.");
@@ -215,8 +217,7 @@ exports.checkValidPasswordResetToken = catchAsync(async (req, res, next) => {
 
   if (!user)
     return next(createError(404, "The page you're looking for does not exist"));
-  user.passwordResetToken = undefined;
-  user.passwordExpiresDate = undefined;
+
   await user.save({ validateBeforeSave: false });
   return res.status(200).json({ message: "Token confirmed" });
 });
