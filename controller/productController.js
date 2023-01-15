@@ -69,17 +69,18 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
     );
 
   const foundProduct = await user.findOne({
-    products: { $elemMatch: { _id: req.body.id } },
-    _id: req.user._id,
+    products: { $elemMatch: { products: req.body.id } },
   });
+
   if (foundProduct) return next(createError(400, "Product already in cart..."));
 
-  await user.findOneAndUpdate(
+  const addedProduct = await user.findOneAndUpdate(
     { _id: req.user.id },
-    { $push: { products: { products: req.body.id, productPaid: false } } }
+    { $push: { products: { products: req.body.id, productPaid: false } } },
+    { new: true }
   );
-
   await req.user.save({ validateBeforeSave: false });
+
   sendResponse(res, 201, "Product added to cart", {
     user: req.user,
   });
