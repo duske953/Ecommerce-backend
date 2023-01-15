@@ -27,12 +27,12 @@ exports.sendEMail = catchAsync(async (req, res, next) => {
   }, <br> <br>Thank you for your purchase on our plaftform! We have received your order and it is now being processed.
  <br> <br> Order Details: <br> <br> Order Number: ${uuidv4()
    .toString()
-   .replace("-", "")} <br> Order Date: ${date.format(
+   .replace("-", "")} <br> <br> Order Date: ${date.format(
       new Date(),
       "ddd, MMM DD YYYY"
-    )} <br> Order Total $${
+    )} <br> <br> Order Total $${
       product.price.value || product.price.name.slice(1)
-    } <br <br> <img style = "height:100px; width:100px; object-fit:cover" src = ${
+    } <br <br> <br> <br>  <img style = "height:100px; width:100px; object-fit:cover" src = ${
       product.image
     } alt=${
       product.title
