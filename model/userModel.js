@@ -84,7 +84,6 @@ const userSchema = new mongoose.Schema({
       },
       productPaid: {
         type: Boolean,
-        default: false,
       },
     },
   ],
