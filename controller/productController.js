@@ -68,8 +68,11 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
       )
     );
 
-  if (req.user.products.includes(req.body.id))
-    return next(createError(400, "Product already in cart..."));
+  const foundProduct = await user.findOne({
+    products: { $elemMatch: { _id: req.body.id } },
+    _id: req.user._id,
+  });
+  if (foundProduct) return next(createError(400, "Product already in cart..."));
 
   await user.findOneAndUpdate(
     { _id: req.user.id },
