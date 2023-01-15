@@ -1,5 +1,4 @@
 function errorController(err, req, res, next) {
-  console.log(err);
   function errMsg(error, statusCode, message = error.message, res) {
     error.expose = true;
     error.statusCode = statusCode;

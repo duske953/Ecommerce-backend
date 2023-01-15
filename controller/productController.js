@@ -73,7 +73,7 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
 
   await user.findOneAndUpdate(
     { _id: req.user.id },
-    { $push: { products: { $each: [req.body.id], $position: 0 } } }
+    { $push: { products: { products: req.body.id, productPaid: false } } }
   );
 
   await req.user.save({ validateBeforeSave: false });
@@ -84,9 +84,8 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
 
 exports.deleteProductFromCart = catchAsync(async (req, res, next) => {
   if (!req.body.id) return next(createError(400, "No items found to delete"));
-
   const foundProduct = await user.findById(req.user.id).findOne({
-    products: req.body.id,
+    products: { $elemMatch: { _id: req.body.id } },
   });
 
   if (!foundProduct)
@@ -97,7 +96,9 @@ exports.deleteProductFromCart = catchAsync(async (req, res, next) => {
     { _id: req.user.id },
     {
       $pull: {
-        products: req.body.id,
+        products: {
+          _id: req.body.id,
+        },
       },
     }
   );
@@ -126,7 +127,7 @@ exports.searchProduct = catchAsync(async (req, res, next) => {
 exports.getProductsFromCart = catchAsync(async (req, res, next) => {
   const product = await user
     .findById(req.user.id)
-    .populate("products")
+    .populate("products.products")
     .select("products");
   sendResponse(res, 200, "products from cart loaded", { product });
 });

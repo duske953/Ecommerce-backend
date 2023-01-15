@@ -1,6 +1,7 @@
 const users = require("../model/userModel");
 const catchAsync = require("../utils/catchAsync");
 const createError = require("http-errors");
+const products = require("../model/productModel");
 // const multer = require("multer");
 // const { GridFsStorage } = require("multer-gridfs-storage");
 const { v4: uuidv4 } = require("uuid");
@@ -53,6 +54,31 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     });
   }
   return next(createError(400, "Please fill one of the fields to proceed"));
+});
+
+exports.userPaidForItem = catchAsync(async (req, res, next) => {
+  const productId = req.body.id;
+  if (!productId)
+    return next(createError(400, "Something went wrong this request"));
+  const paidItem = await users.findOneAndUpdate(
+    { products: { $elemMatch: { _id: productId } } },
+    { $set: { "products.$.productPaid": true } }
+  );
+  res.status(200).json({
+    message: "Item successfully paid for",
+  });
+});
+
+exports.checkIfUserHasPaidForItem = catchAsync(async (req, res, next) => {
+  const isItemPaidFor = await users.findOne({
+    products: { $elemMatch: { _id: req.body.id } },
+    products: { $elemMatch: { productPaid: true } },
+  });
+  if (!isItemPaidFor)
+    return next(
+      createError(404, "The page your're looking for does not exiiists")
+    );
+  next();
 });
 
 // exports.uploadImg = catchAsync(async (req, res, next) => {

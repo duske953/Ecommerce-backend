@@ -21,8 +21,8 @@ function sendCookie(req, res, token) {
     keys,
   });
   return cookies.set("jwt", token, {
-    sameSite: "none",
-    secure: true,
+    // sameSite: "none",
+    secure: false,
     path: "/",
     httpOnly: true,
   });

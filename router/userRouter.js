@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authController = require("../controller/authController");
 const userController = require("../controller/userController");
+const productController = require("../controller/productController");
 const processStripe = require("../utils/stripePayment");
 const utiltyController = require("../controller/utilityController");
 const Limiter = require("../utils/rateLimit");
@@ -34,7 +35,19 @@ router
   .route("/sendMail")
   .post(authController.isActive, utiltyController.sendEMail);
 
+router
+  .route("/productPaid")
+  .post(authController.isActive, userController.userPaidForItem);
 // router
+
+router
+  .route("/checkIfUserPaidForItem")
+  .patch(
+    authController.isActive,
+    userController.checkIfUserHasPaidForItem,
+    utiltyController.sendEMail,
+    productController.deleteProductFromCart
+  );
 //   .route("/uploadImg")
 //   .post(userController.upload.single("profileImg"), userController.uploadImg);
 

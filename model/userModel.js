@@ -70,6 +70,25 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 
+  userPaid: {
+    type: Boolean,
+    default: false,
+    select: false,
+  },
+
+  products: [
+    {
+      products: {
+        type: mongoose.Schema.ObjectId,
+        ref: "product",
+      },
+      productPaid: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  ],
+
   EmailTokenExpires: {
     type: Date,
     select: false,
@@ -87,12 +106,12 @@ const userSchema = new mongoose.Schema({
     default: new Date(),
   },
 
-  products: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "product",
-    },
-  ],
+  //   products: [
+  //     {
+  //       type: mongoose.Schema.ObjectId,
+  //       ref: "product",
+  //     },
+  //   ],
 });
 
 function returnHtml(msg) {
@@ -135,9 +154,9 @@ userSchema.method("confirmAccount", async function () {
       this.Email,
       "OEK needs you to verify your email address",
       returnHtml(
-        `Hi there! <br> <br> <br> Thank you for signing up. <br> <br> To get you started, Please click <br> on the link below to confirm <br> your email address. It will only <br> take a couple of seconds. <br> <br> 
+        `Dear ${this.Name}, <br> <br>  Thank you for signing up for our ecommerce website! We are excited to have you as a new member. <br> <br> To complete your registration, please confirm your email address by clicking on the link below: <br> <br>
         <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" href="https://tech-freak.vercel.app/users/activate/${token}">Confirm Account</a> 
-        <br> Note that this link is valid for only 10minutes. <br> <br> If you didn't initiate this request, <br> kindly disregard this email. <br> <br> Regards, <br> <br> OEK`
+        <br> <br>  Note that this link is valid for only 10minutes. <br> <br>Once you have confirmed your email, you will be able to access all of the features of our website and start shopping! <br> <br>  If you didn't initiate this request, <br> kindly disregard this email. <br> <br> Regards, <br> <br> OEK`
       )
     );
   } catch (err) {
@@ -156,12 +175,12 @@ userSchema.method("forgotPassword", async function () {
     this.Email,
     "Reset your password",
     returnHtml(
-      `Hi ${
+      `Dear ${
         this.Name
-      }, <br> <br> <br>  A password reset for your account was requested. <br> Please click the link below to change your password. <br> <br> <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" 
+      }, <br> <br>  We have received a request to reset your password for your account on our website. If you did not request a password reset, please ignore this email. <br> <br> To reset your password, please click on the link below: <br> <br> <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" 
       href="https://tech-freak.vercel.app/users/reset-password/${token}?id=${cryptr.encrypt(
         this.Email
-      )}">Reset Password</a> <br><br>  Note that this link is valid for 10minutes. <br> After the time limit has expired, you will have to resubmit the request for a password reset <br><br> Regards, <br> <br> OEK.`
+      )}">Reset Password</a> <br><br> If the link above does not work, you can also copy and paste the URL into your browser. <br> <br> Note that this link is valid for 10minutes. <br> <br> After the time limit has expired, you will have to resubmit the request for a password reset <br><br> Regards, <br> <br> OEK.`
     )
   );
 });
