@@ -176,7 +176,7 @@ userSchema.method("forgotPassword", async function () {
     returnHtml(
       `Dear ${
         this.Name
-      }, <br> <br>  We have received a request to reset your password for your account on our website. If you did not request a password reset, please ignore this email. <br> <br> To reset your password, please click on the link below: <br> <br> <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" 
+      }, <br> <br>  We have received a request to reset your password for your account. If you did not request a password reset, please ignore this email. <br> <br> To reset your password, please click on the link below: <br> <br> <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" 
       href="https://tech-freak.vercel.app/users/reset-password/${token}?id=${cryptr.encrypt(
         this.Email
       )}">Reset Password</a> <br><br> If the link above does not work, you can also copy and paste the URL into your browser. <br> <br> Note that this link is valid for 10minutes. <br> <br> After the time limit has expired, you will have to resubmit the request for a password reset <br><br> Regards, <br> <br> OEK.`

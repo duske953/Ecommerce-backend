@@ -32,7 +32,7 @@ exports.sendEMail = catchAsync(async (req, res, next) => {
       "ddd, MMM DD YYYY"
     )} <br> <br> Order Total $${
       product.price.value || product.price.name.slice(1)
-    } <br <br> <br> <br>  <img style = "height:100px; width:100px; object-fit:cover" src = ${
+    } <br <br> <br> <br>  <img style = "height:150px; width:150px; object-fit:scale-down" src = ${
       product.image
     } alt=${
       product.title
