@@ -19,7 +19,8 @@ module.exports = catchAsync(async (req, res, next) => {
   const stripe = require("stripe")(process.env.STRIPE_KEY);
   const paymentIntent = await stripe.paymentIntents.create({
     amount:
-      Math.floor(product.price.value || product.price.name.slice(1)) * 100,
+      Math.floor(product.price.value || +product.price.name.replace("$", "")) *
+      100,
     currency: "usd",
     payment_method_types: ["card"],
     metadata: {
