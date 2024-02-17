@@ -1,10 +1,10 @@
-const catchAsync = require("../utils/catchAsync");
-const products = require("../model/productModel");
-const utilityController = require("./utilityController");
-const axios = require("axios");
-const createError = require("http-errors");
-const product = require("../model/productModel");
-const user = require("../model/userModel");
+const catchAsync = require('../utils/catchAsync');
+const products = require('../model/productModel');
+const utilityController = require('./utilityController');
+const axios = require('axios');
+const createError = require('http-errors');
+const product = require('../model/productModel');
+const user = require('../model/userModel');
 
 function sendResponse(res, code, message, data) {
   return res.status(code).json({
@@ -18,7 +18,7 @@ function sendResponse(res, code, message, data) {
 exports.getProducts = catchAsync(async (req, res, next) => {
   const headphones = await products.aggregate([
     {
-      $match: { categories: { $elemMatch: { id: "172541" } } },
+      $match: { categories: { $elemMatch: { id: '172541' } } },
     },
     {
       $sample: { size: 8 },
@@ -27,14 +27,13 @@ exports.getProducts = catchAsync(async (req, res, next) => {
 
   const laptops = await products.aggregate([
     {
-      $match: { categories: { $elemMatch: { id: "13896617011" } } },
+      $match: { categories: { $elemMatch: { id: '13896617011' } } },
     },
     {
       $sample: { size: 8 },
     },
   ]);
-
-  sendResponse(res, 200, "products loaded", { headphones, laptops });
+  sendResponse(res, 200, 'products loaded', { headphones, laptops });
 });
 
 exports.getProduct = catchAsync(async (req, res, next) => {
@@ -43,7 +42,7 @@ exports.getProduct = catchAsync(async (req, res, next) => {
     asin: req.params.asin,
   });
   if (!product)
-    return next(createError(404, "We could not find the requested product"));
+    return next(createError(404, 'We could not find the requested product'));
   const id = product.categories[0].id;
 
   const similarProduct = await products.aggregate([
@@ -54,17 +53,17 @@ exports.getProduct = catchAsync(async (req, res, next) => {
       $sample: { size: 8 },
     },
   ]);
-  sendResponse(res, 200, "Product fetched", { product, similarProduct });
+  sendResponse(res, 200, 'Product fetched', { product, similarProduct });
 });
 
 exports.addProductToCart = catchAsync(async (req, res, next) => {
   if (!req.body.id)
-    return next(createError(400, "No product was found to add to cart"));
+    return next(createError(400, 'No product was found to add to cart'));
   if (req.user.products.length >= 5)
     return next(
       createError(
         400,
-        "You can only have 5 products per cart. Please process your order"
+        'You can only have 5 products per cart. Please process your order'
       )
     );
 
@@ -72,29 +71,36 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
     products: { $elemMatch: { products: req.body.id } },
   });
 
-  if (foundProduct) return next(createError(400, "Product already in cart..."));
+  if (foundProduct) return next(createError(400, 'Product already in cart...'));
 
   const addedProduct = await user.findOneAndUpdate(
     { _id: req.user.id },
-    { $push: { products: { products: req.body.id, productPaid: false } } },
+    {
+      $push: {
+        products: {
+          $each: [{ products: req.body.id, productPaid: false }],
+          $position: 0,
+        },
+      },
+    },
     { new: true }
   );
   await req.user.save({ validateBeforeSave: false });
 
-  sendResponse(res, 201, "Product added to cart", {
+  sendResponse(res, 201, 'Product added to cart', {
     user: req.user,
   });
 });
 
 exports.deleteProductFromCart = catchAsync(async (req, res, next) => {
-  if (!req.body.id) return next(createError(400, "No items found to delete"));
+  if (!req.body.id) return next(createError(400, 'No items found to delete'));
   const foundProduct = await user.findById(req.user.id).findOne({
     products: { $elemMatch: { _id: req.body.id } },
   });
 
   if (!foundProduct)
     return next(
-      createError(400, "We could not find that product in your cart")
+      createError(400, 'We could not find that product in your cart')
     );
   await user.findById(req.user.id).findOneAndUpdate(
     { _id: req.user.id },
@@ -125,22 +131,22 @@ exports.searchProduct = catchAsync(async (req, res, next) => {
   if (searchedProduct.length === 0)
     return next(createError(404, "The page you're looking for does not exist"));
 
-  sendResponse(res, 200, "success", { searchedProduct });
+  sendResponse(res, 200, 'success', { searchedProduct });
 });
 
 exports.getProductsFromCart = catchAsync(async (req, res, next) => {
   const product = await user
     .findById(req.user.id)
-    .populate("products.products")
-    .select("products");
-  sendResponse(res, 200, "products from cart loaded", { product });
+    .populate('products.products')
+    .select('products');
+  sendResponse(res, 200, 'products from cart loaded', { product });
 });
 
 exports.getProductsFromCategory = catchAsync(async (req, res, next) => {
   if (!req.query.id || !req.query.page)
-    return next(createError(400, "something went wrong with the request"));
+    return next(createError(400, 'something went wrong with the request'));
   if (req.query.page <= 0 || !Number.isFinite(+req.query.page))
-    return next(createError(400, "something went wrong with the request"));
+    return next(createError(400, 'something went wrong with the request'));
 
   const foundProducts = await products
     .find({
@@ -151,5 +157,5 @@ exports.getProductsFromCategory = catchAsync(async (req, res, next) => {
 
   if (foundProducts.length === 0)
     return next(createError(404, "The page you're looking for does not exist"));
-  sendResponse(res, 200, "products fetched", { foundProducts });
+  sendResponse(res, 200, 'products fetched', { foundProducts });
 });

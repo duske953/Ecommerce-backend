@@ -1,12 +1,11 @@
 function errorController(err, req, res, next) {
-  console.log(err);
   function errMsg(error, statusCode, message = error.message, res) {
     error.expose = true;
     error.statusCode = statusCode;
     error.status = statusCode;
     error.message = message;
 
-    process.env.NODE_ENV === "development"
+    process.env.NODE_ENV === 'development'
       ? devErrors(res, error)
       : prodErrors(res, error);
   }
@@ -44,38 +43,38 @@ function errorController(err, req, res, next) {
 
   //HANDLE JWT EXPIRED ERROR
   function handleTokenExpiredError(error) {
-    errMsg(error, 401, "The token given has already expired", res);
+    errMsg(error, 401, 'The token given has already expired', res);
   }
 
   function handleValidationError(error) {
-    const msg = error.message.split(": ")[2];
+    const msg = error.message.split(': ')[2];
     errMsg(error, 400, msg, res);
   }
 
   function handleJsonWebTokenError() {
-    errMsg(error, 401, "The token provied is not valid", res);
+    errMsg(error, 401, 'The token provied is not valid', res);
   }
 
   function handleCastError(error) {
-    const message = "Something went wrong while trying to process that request";
+    const message = 'Something went wrong while trying to process that request';
     errMsg(error, 404, message, res);
   }
 
   function otherErrors(error) {
-    if (process.env.NODE_ENV === "development") return devErrors(res, error);
+    if (process.env.NODE_ENV === 'development') return devErrors(res, error);
     else return prodErrors(res, error);
   }
 
   function handleInvalidFileInput(error) {
-    const message = "Please select a file";
+    const message = 'Please select a file';
     errMsg(error, 400, message, res);
   }
 
   if (err.code === 11000) return handleDuplicateErr(err);
-  if (err.name === "TokenExpiredError") return handleTokenExpiredError(err);
-  if (err.name === "ValidationError") return handleValidationError(err);
-  if (err.name === "CastError") return handleCastError(err);
-  if (err.name === "JsonWebTokenError") return handleJsonWebTokenError(err);
+  if (err.name === 'TokenExpiredError') return handleTokenExpiredError(err);
+  if (err.name === 'ValidationError') return handleValidationError(err);
+  if (err.name === 'CastError') return handleCastError(err);
+  if (err.name === 'JsonWebTokenError') return handleJsonWebTokenError(err);
   if (
     err.message === "Cannot read properties of undefined (reading 'filename')"
   )
