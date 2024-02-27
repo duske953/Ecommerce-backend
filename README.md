@@ -1,4 +1,4 @@
-## Backend for Tech-Freak E-Commerce Web App
+## Tech-freak: Server for Tech-Freak E-Commerce Web App
 
 **1. Project Description:**
 
