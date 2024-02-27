@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Server handling the ecommerce web app",
   "author": "Eloho Kennedy",
   "main": "app.js",
   "engines": {
