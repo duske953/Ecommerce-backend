@@ -30,7 +30,6 @@ This repository serves as the backend for the Tech Freak e-commerce web applicat
 
 This backend is designed to work seamlessly with the corresponding frontend repository: [https://github.com/duske953/ecommerce-frontend](https://github.com/duske953/ecommerce-frontend).
 
-**5. Setup (Optional):**
 
 **Prerequisites:**
 
