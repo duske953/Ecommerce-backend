@@ -28,6 +28,7 @@
     "express": "^4.18.1",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^6.7.0",
+    "express-xss-sanitizer": "^1.1.9",
     "helmet": "^6.0.1",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^8.5.1",

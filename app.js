@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
+const { xss } = require('express-xss-sanitizer');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const userRouter = require('./router/userRouter');
@@ -35,13 +36,10 @@ process.on('unhandledRejection', (err) => {
 });
 
 app.set('trust proxy', 1);
+app.use(xss());
 app.use(mongoSanitize());
 app.use(compression());
-app.use(
-  helmet({
-    crossOriginResourcePolicy: false,
-  })
-);
+app.use(helmet());
 app.use('/uploads/:id', express.static(path.join(__dirname + 'public')));
 
 app.use(
