@@ -25,7 +25,7 @@ function sendCookie(req, res, token) {
 
   return cookies.set('jwt', token, {
     sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'lax',
-    secure: process.env.NODE_ENV === 'development' ? false : true,
+    secure: process.env.NODE_ENV === 'development' ? false : false,
     path: '/',
     httpOnly: true,
   });
