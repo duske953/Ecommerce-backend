@@ -28,9 +28,9 @@ function sendCookie(req, res, token) {
     secure: process.env.NODE_ENV === 'development' ? false : true,
     path: '/',
     httpOnly: true,
-    expires: 7 * 24 * 60 * 60 * 1000, // 7 days
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    domain: 'ecommerce-backend-v2-pie.vercel.app',
+    // expires: 7 * 24 * 60 * 60 * 1000, // 7 days
+    // maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    // domain: 'ecommerce-backend-v2-pie.vercel.app',
   });
 }
 //SENDING RESPONSES
@@ -54,7 +54,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   };
   const user = await users.create(userDetails);
   const token = await signJwt(user._id);
-  sendCookie(req, res, token);
+  // sendCookie(req, res, token);
   await user.save({ validateBeforeSave: false });
   sendResponse(res, 201, user, token, 'Account created.');
 });
@@ -89,7 +89,7 @@ exports.activateAccount = catchAsync(async (req, res, next) => {
   user.EmailConfirmToken = undefined;
   user.EmailTokenExpiresDate = undefined;
   await user.save({ validateBeforeSave: false });
-  sendCookie(req, res, cookieToken);
+  // sendCookie(req, res, cookieToken);
   sendResponse(res, 200, user, 'Your account is now active.');
 });
 
@@ -128,7 +128,7 @@ exports.checkUserCredentials = catchAsync(async (req, res, next) => {
 //LOGGING IN USERS
 exports.login = catchAsync(async (req, res, next) => {
   const token = await signJwt(req.validUser._id);
-  sendCookie(req, res, token);
+  // sendCookie(req, res, token);
   sendResponse(res, 200, req.validUser, token, 'Logged in');
 });
 
@@ -178,9 +178,9 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     );
   user.Password = newPassword;
   user.PasswordConfirm = passwordConfirm;
-  res.clearCookie('jwt');
+  // res.clearCookie('jwt');
   const token = await signJwt(user._id);
-  sendCookie(req, res, token);
+  // sendCookie(req, res, token);
   await user.save();
   sendResponse(res, 200, user, token, 'Your password has been updated');
 });
