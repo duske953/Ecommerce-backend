@@ -38,7 +38,7 @@ process.on('unhandledRejection', (err) => {
   process.exit(1);
 });
 
-// app.set('trust proxy', 1);
+app.set('trust proxy', 1);
 app.use(xss());
 app.use(mongoSanitize());
 app.use(compression());

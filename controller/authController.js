@@ -28,6 +28,7 @@ function sendCookie(req, res, token) {
     secure: process.env.NODE_ENV === 'development' ? false : true,
     path: '/',
     httpOnly: true,
+    expires: 7 * 24 * 60 * 60 * 1000, // 7 days
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     domain: 'ecommerce-backend-v2-pie.vercel.app',
   });
