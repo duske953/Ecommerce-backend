@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "ecommerce-backend",
   "version": "1.0.0",
   "type": "commonjs",
   "description": "Server handling the ecommerce web app",
