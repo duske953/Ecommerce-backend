@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
 const Cryptr = require('cryptr');
 const { promisify } = require('util');
+const bcrypt = require('bcryptjs');
 const cryptr = new Cryptr(process.env.CRYPT_SECRET);
 const Cookies = require('cookies');
 const users = require('../model/userModel');
+const date = require('date-and-time');
 const createError = require('http-errors');
-const user = require('../model/userModel');
+const randomToken = require('rand-token');
 const catchAsync = require('../utils/catchAsync');
 const keys = [process.env.JWT_SECRET];
 
@@ -41,10 +43,10 @@ function sendResponse(...params) {
 //SIGNING UP USERS
 exports.signup = catchAsync(async (req, res, next) => {
   const userDetails = {
-    Email: req.body.Email,
-    Name: req.body.Name,
-    Password: req.body.Password,
-    PasswordConfirm: req.body.PasswordConfirm,
+    Email: req.body.email,
+    Name: req.body.fullName,
+    Password: req.body.password,
+    PasswordConfirm: req.body.confirmPassword,
   };
   const user = await users.create(userDetails);
   const token = await signJwt(user._id);
@@ -64,25 +66,27 @@ exports.isActive = catchAsync(async (req, res, next) => {
 
 // ACTIVATING USER'S ACCOUNT
 exports.activateAccount = catchAsync(async (req, res, next) => {
-  if (!req.params.confirmToken)
+  const token = req.query.token;
+  if (!token)
     return next(
       createError(404, "The page you're looking for does not exists")
     );
   const user = await users.findOne({
-    EmailConfirmToken: cryptr.decrypt(req.params.confirmToken),
+    active: false,
+    EmailConfirmToken: cryptr.decrypt(token),
     EmailTokenExpires: { $gte: new Date() },
   });
   if (!user)
     return next(
       createError(404, "The page your're looking for no longer existes")
     );
-  const token = await signJwt(user._id);
+  const cookieToken = await signJwt(user._id);
   user.active = true;
   user.EmailConfirmToken = undefined;
-  user.EmailTokenExpires = undefined;
+  user.EmailTokenExpiresDate = undefined;
   await user.save({ validateBeforeSave: false });
-  sendCookie(req, res, token);
-  sendResponse(res, 200, user, token, 'Your account is now active.');
+  sendCookie(req, res, cookieToken);
+  sendResponse(res, 200, user, 'Your account is now active.');
 });
 
 //SENDING CONFIRMATION EMAIL TO USER TO CONFIRM EMAIL ADDRESS
@@ -99,14 +103,20 @@ exports.sendConfimationEmail = catchAsync(async (req, res, next) => {
 
 exports.checkUserCredentials = catchAsync(async (req, res, next) => {
   const { Email, Password } = req.body;
+  console.log(req.body);
   if (!Email || !Password)
     return next(
       createError(400, 'Please enter your email or password to proceed')
     );
 
-  const user = await users.findOne({ Email }).select('+Password');
+  const user = await users
+    .findOne({ Email })
+    .select('+Password +isReusedPassword');
+  if (user && user.isReusedPassword)
+    return next(createError(401, 'Please reset your password'));
   if (!user || !(await user.verifyPassword(Password, user.Password)))
     return next(createError(401, 'Invalid credentials please try again'));
+
   req.validUser = user;
   next();
 });
@@ -119,7 +129,10 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
-  const user = await users.findById(req.user.id).select('+active');
+  const user = await users
+    .findById(req.user.id)
+    .select('+active')
+    .populate('productsInCart.product');
   sendResponse(res, 200, user, null, 'User is logged in');
 });
 
@@ -171,10 +184,6 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 exports.deleteAccount = catchAsync(async (req, res, next) => {
   if (!req.validUser._id.equals(req.user._id))
     return next(createError(400, 'Invalid credentials please try again'));
-  if (req.body.status === 'pendingDelete')
-    return res.status(200).json({
-      msg: 'ok',
-    });
   await users.findByIdAndDelete(req.user._id);
   res.clearCookie('jwt');
   sendResponse(res, 200, null, null, 'Logged out');
@@ -185,59 +194,79 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   if (!Email)
     return next(createError(400, 'Please fill in your email address'));
 
-  const foundUser = await users.findOne({ Email });
-
-  if (!foundUser)
+  const user = await users.findOne({ Email });
+  if (!user)
     return next(
       createError(
         400,
         'We could not find a user with the assosciated email address'
       )
     );
-  await foundUser.forgotPassword();
-  await foundUser.save({ validateBeforeSave: false });
-  res.status(200).json({
-    message:
-      'An email containing details on how to reset your password was just sent',
-  });
+  const now = new Date();
+  user.passwordResetToken = randomToken.generate(100);
+  const token = cryptr.encrypt(user.passwordResetToken);
+  user.passwordResetExpiresDate = date.addMinutes(now, 10);
+  await user.save({ validateBeforeSave: false });
+  req.user = user;
+  req.token = token;
+  return next();
 });
 
 exports.checkValidPasswordResetToken = catchAsync(async (req, res, next) => {
-  const { Token, id } = req.body;
-
-  if (!Token || !id)
+  const { token } = req.query;
+  if (!token)
     return next(createError(404, "The page you're looking for does not exist"));
+
+  const decryptedToken = cryptr.decrypt(token);
   const user = await users
     .findOne({
-      Email: cryptr.decrypt(id),
-      passwordResetToken: cryptr.decrypt(Token),
-      passwordExpiresDate: { $gte: new Date() },
+      passwordResetToken: decryptedToken,
+      passwordResetExpiresDate: { $gte: new Date() },
     })
     .select('passwordResetToken passwordExpiresDate');
 
   if (!user)
-    return next(createError(404, "The page you're looking for does not exist"));
-
-  await user.save({ validateBeforeSave: false });
+    return next(createError(400, "The pge you're looking for does not exist"));
   return res.status(200).json({ message: 'Token confirmed' });
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  const { password, confirmPassword, id } = req.body;
+  const { password, confirmPassword, token } = req.body;
+  if (!password || !confirmPassword || !token)
+    return next(createError(400, 'something went wrong'));
+  const decryptedToken = cryptr.decrypt(token);
 
-  if (!password || !confirmPassword)
-    return next(createError(400, 'Please fill in all fields'));
+  const user = await users
+    .findOne({
+      passwordResetToken: decryptedToken,
+      passwordResetExpiresDate: { $gte: new Date() },
+    })
+    .select('+Password');
+  if (!user) return next(createError(400, 'something went wrong'));
 
-  const user = await users.findOne({
-    Email: cryptr.decrypt(id),
-  });
+  const isPasswordSame = await user.verifyPassword(
+    password,
+    user.Password || ''
+  );
 
+  if (isPasswordSame) {
+    user.isReusedPassword = true;
+    await user.save({ validateBeforeSave: false });
+    return next(
+      createError(400, "new password can't be the same as the old password")
+    );
+  }
+  // user.Password = undefined;
+  // await user.save({ validateBeforeSave: false });
+  // res.status(200).json({ msg: 'k' });
+
+  user.isReusedPassword = undefined;
   user.Password = password;
   user.PasswordConfirm = confirmPassword;
-  user.passwordExpiresDate = undefined;
+  user.passwordResetExpiresDate = undefined;
   user.passwordResetToken = undefined;
-  const token = await signJwt(user._id);
-  sendCookie(req, res, token);
+  res.clearCookie('jwt', { sameSite: 'none', secure: true, path: '/' });
+  // // const token = await signJwt(user._id);
   await user.save();
   return res.status(200).json({ message: 'Your password has been reset' });
 });

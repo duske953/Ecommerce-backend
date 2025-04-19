@@ -4,7 +4,7 @@ function errorController(err, req, res, next) {
     error.statusCode = statusCode;
     error.status = statusCode;
     error.message = message;
-
+    console.log(error);
     process.env.NODE_ENV === 'development'
       ? devErrors(res, error)
       : prodErrors(res, error);
@@ -37,7 +37,7 @@ function errorController(err, req, res, next) {
   // DUPLICATE FIELDS WITH THE UNIQUE TYPE SCHEMA
   function handleDuplicateErr(error) {
     const errKey = Object.keys(error.keyPattern);
-    const message = `The ${errKey},${error.keyValue.Email} already Exists`;
+    const message = `This email address already exists`;
     errMsg(error, 400, message, res);
   }
 

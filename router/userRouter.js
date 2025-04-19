@@ -4,17 +4,26 @@ const authController = require('../controller/authController');
 const userController = require('../controller/userController');
 const productController = require('../controller/productController');
 const processStripe = require('../utils/stripePayment');
-const utiltyController = require('../controller/utilityController');
+const mailController = require('../controller/mailcontroller/checkOutSuccessEmail');
 const Limiter = require('../utils/rateLimit');
+const {
+  sendForgotPasswordEmail,
+} = require('../controller/mailcontroller/fogotPasswordEmail');
+const {
+  sendActivateAccountEmail,
+} = require('../controller/mailcontroller/activateAccountEmail');
 
 router.use(Limiter(5 * 60 * 1000, 300));
 router.route('/signup').post(authController.signup);
-router.route('/activate/:confirmToken').patch(authController.activateAccount);
-router.route('/forgotPassword').post(authController.forgotPassword);
+router.route('/activate').get(authController.activateAccount);
 router
-  .route('/resetPassword')
-  .post(authController.checkValidPasswordResetToken)
-  .patch(authController.resetPassword);
+  .route('/forgot-password')
+  .post(authController.forgotPassword, sendForgotPasswordEmail);
+
+router
+  .route('/valid-reset-password-token')
+  .get(authController.checkValidPasswordResetToken);
+router.route('/reset-password').post(authController.resetPassword);
 router
   .route('/login')
   .post(authController.checkUserCredentials, authController.login);
@@ -22,18 +31,18 @@ router
 //protected routes
 router.use(authController.protected);
 router.route('/isLoggedIn').get(authController.isLoggedIn);
-router.use(Limiter(5 * 60 * 1000, 150));
-router.route('/confirm').post(authController.sendConfimationEmail);
+router.use(Limiter(5 * 60 * 1000, 4));
+router.route('/send-activate-account-email').post(sendActivateAccountEmail);
 router.route('/logout').post(authController.logout);
-router.route('/updatePassword').patch(authController.updatePassword);
-router.route('/updateMe').patch(userController.updateMe);
-router.route('/process-checkout').post(authController.isActive, processStripe);
+router.route('/update-password').post(authController.updatePassword);
+router.route('/update-account-info').post(userController.updateMe);
+router.route('/process-checkout').get(authController.isActive, processStripe);
 router
-  .route('/deleteAccount')
+  .route('/delete-account')
   .delete(authController.checkUserCredentials, authController.deleteAccount);
-router
-  .route('/sendMail')
-  .post(authController.isActive, utiltyController.sendEMail);
+// router
+//   .route('/sendMail')
+//   .post(authController.isActive, utiltyController.sendEMail);
 
 router
   .route('/productPaid')
@@ -41,14 +50,11 @@ router
 // router
 
 router
-  .route('/checkIfUserPaidForItem')
-  .patch(
+  .route('/checkout-success')
+  .post(
     authController.isActive,
-    userController.checkIfUserHasPaidForItem,
-    utiltyController.sendEMail,
-    productController.deleteProductFromCart
+    mailController.sendSuccessCheckoutEmail,
+    productController.deleteProductsFromCart
   );
-//   .route("/uploadImg")
-//   .post(userController.upload.single("profileImg"), userController.uploadImg);
 
 module.exports = router;

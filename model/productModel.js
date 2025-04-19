@@ -1,24 +1,32 @@
-const axios = require("axios");
-const mongoose = require("mongoose");
-const Crawler = require("crawler");
+const axios = require('axios');
+const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, "Product must have a name"],
+    required: [true, 'Product must have a name'],
     unique: true,
   },
   details: {
-    type: Array,
+    productSpecs: [
+      {
+        name: String,
+        value: String,
+      },
+    ],
+    aboutProduct: {
+      type: Array,
+    },
   },
   asin: String,
   link: String,
+  images: [],
   categories: {},
   image: {
     type: String,
   },
   rating: {
-    type: String,
+    type: Number,
     required: true,
   },
   price: {
@@ -37,9 +45,9 @@ const productSchema = new mongoose.Schema({
 //   include_html: "false",
 // };
 
-productSchema.index({ title: "text" });
+productSchema.index({ title: 'text' });
 
-const product = mongoose.model("product", productSchema);
+const product = mongoose.model('product', productSchema);
 
 // (async function () {
 //   console.log("working...");

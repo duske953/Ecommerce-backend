@@ -1,5 +1,4 @@
-const catchAsync = require("./catchAsync");
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
 async function sendEmail(to, subject, html) {
   try {
