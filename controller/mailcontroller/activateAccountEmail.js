@@ -5,7 +5,9 @@ const randomToken = require('rand-token');
 const users = require('../../model/userModel');
 const sendMail = require('../../utils/sendEmail');
 const DOMAIN =
-  process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '';
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3001'
+    : process.env.FRONTEND_URL;
 const cryptr = new Cryptr(process.env.CRYPT_SECRET);
 exports.sendActivateAccountEmail = catchAsync(async (req, res, next) => {
   const user = await users.findById(req.user._id);

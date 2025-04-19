@@ -46,7 +46,7 @@ app.use(
     origin: `${
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:3001'
-        : 'https://tech-freak.vercel.app'
+        : process.env.FRONTEND_URL
     }`,
     methods: ['GET', 'POST', 'DELETE', 'PATCH'],
   })

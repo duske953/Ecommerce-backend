@@ -2,7 +2,9 @@ const catchAsync = require('../../utils/catchAsync');
 const users = require('../../model/userModel');
 const sendEmail = require('../../utils/sendEmail');
 const DOMAIN =
-  process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : process.env.FRONTEND_URL;
 exports.sendForgotPasswordEmail = catchAsync(async (req, res, next) => {
   const now = new Date();
   const user = await users.findOne({ Email: req.user.Email });
