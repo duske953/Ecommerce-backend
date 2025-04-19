@@ -29,6 +29,7 @@ function sendCookie(req, res, token) {
     path: '/',
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    domain: 'https://ecommerce-backend-v2-pie.vercel.app',
   });
 }
 //SENDING RESPONSES
