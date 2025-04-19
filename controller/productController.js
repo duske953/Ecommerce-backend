@@ -18,7 +18,7 @@ function sendResponse(res, code, message, data) {
 exports.getProducts = catchAsync(async (req, res, next) => {
   const headphones = await products.aggregate([
     {
-      $match: { categories: { $elemMatch: { id: '172541' } } },
+      $match: { 'categories.id': 16225007015 },
     },
     {
       $sample: { size: 8 },
@@ -27,7 +27,7 @@ exports.getProducts = catchAsync(async (req, res, next) => {
 
   const laptops = await products.aggregate([
     {
-      $match: { categories: { $elemMatch: { id: '13896617011' } } },
+      $match: { 'categories.id': 16225007012 },
     },
     {
       $sample: { size: 8 },
@@ -150,7 +150,7 @@ exports.getProductsFromCategory = catchAsync(async (req, res, next) => {
 
   const foundProducts = await products
     .find({
-      categories: { $elemMatch: { id: req.query.id } },
+      $match: { 'categories.id': +req.query.id },
     })
     .limit(8)
     .skip(+(req.query.page - 1) * 8);
