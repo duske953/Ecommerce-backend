@@ -15,7 +15,11 @@ const app = express();
 
 (async function () {
   try {
-    await mongoose.connect(`mongodb://127.0.0.1:27017/ecommerce`);
+    await mongoose.connect(
+      process.env.NODE_ENV === 'development'
+        ? `mongodb://127.0.0.1:27017/ecommerce`
+        : `mongodb+srv://eloho:${process.env.MONGODB_PASSWORD}@ecommerce.7huagy2.mongodb.net/?retryWrites=true&w=majority`
+    );
     console.log('database connected');
   } catch (err) {
     console.log('something went wrong');
