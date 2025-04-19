@@ -269,7 +269,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.PasswordConfirm = confirmPassword;
   user.passwordResetExpiresDate = undefined;
   user.passwordResetToken = undefined;
-  res.clearCookie('jwt', { sameSite: 'none', secure: true, path: '/' });
+  // res.clearCookie('jwt', { sameSite: 'none', secure: true, path: '/' });
   // // const token = await signJwt(user._id);
   await user.save();
   return res.status(200).json({ message: 'Your password has been reset' });
