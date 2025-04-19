@@ -31,7 +31,7 @@ router
 //protected routes
 router.use(authController.protected);
 router.route('/isLoggedIn').get(authController.isLoggedIn);
-router.use(Limiter(5 * 60 * 1000, 4));
+router.use(Limiter(5 * 60 * 1000, 100));
 router.route('/send-activate-account-email').post(sendActivateAccountEmail);
 router.route('/logout').post(authController.logout);
 router.route('/update-password').post(authController.updatePassword);
