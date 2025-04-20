@@ -44,10 +44,12 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     const user = await users.findById(req.user.id).select('+active');
     user.set(updatedDetails);
     await user.save({ validateModifiedOnly: true });
+    const token = await signJwt(user._id);
     return res.status(200).json({
       message: 'Details changed',
       data: {
         user,
+        token,
       },
     });
   }

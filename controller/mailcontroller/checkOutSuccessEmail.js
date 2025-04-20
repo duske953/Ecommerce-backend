@@ -114,7 +114,7 @@ exports.sendSuccessCheckoutEmail = catchAsync(async (req, res, next) => {
       </tr>
       <tr>
         <td class="footer">
-          &copy; ${date.format(now, 'YYYY')} Tech-Freak. All rights reserved.
+          &copy; ${new Date().getFullYear()} ByteCart. All rights reserved.
         </td>
       </tr>
     </table>

@@ -9,14 +9,15 @@ const date = require('date-and-time');
 const createError = require('http-errors');
 const randomToken = require('rand-token');
 const catchAsync = require('../utils/catchAsync');
+const { signJwt } = require('../utils/signJwt');
 const keys = [process.env.JWT_SECRET];
 
-async function signJwt(id) {
-  const token = await jwt.sign({ data: id }, process.env.JWT_SECRET, {
-    expiresIn: '7d',
-  });
-  return token;
-}
+// async function signJwt(id) {
+//   const token = await jwt.sign({ data: id }, process.env.JWT_SECRET, {
+//     expiresIn: '7d',
+//   });
+//   return token;
+// }
 //SENDING COOKIES
 function sendCookie(req, res, token) {
   const cookies = new Cookies(req, res, {

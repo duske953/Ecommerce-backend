@@ -109,7 +109,7 @@ exports.sendActivateAccountEmail = catchAsync(async (req, res, next) => {
       </tr>
       <tr>
         <td class="footer">
-          &copy; {{YEAR}} Your Store Name. All rights reserved.
+          &copy; ${new Date().getFullYear()} ByteCart. All rights reserved.
         </td>
       </tr>
     </table>

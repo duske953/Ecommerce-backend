@@ -88,7 +88,9 @@ exports.sendForgotPasswordEmail = catchAsync(async (req, res, next) => {
           <p>We received a request to reset your password. Click the button below to choose a new one.</p>
 
           <p style="text-align: center;">
-            <a href="${DOMAIN}/reset-password/?token=${req.token}" class="button">Reset Password</a>
+            <a href="${DOMAIN}/reset-password/?token=${
+      req.token
+    }" class="button">Reset Password</a>
           </p>
 
           <p>If you didn’t request this, you can ignore this message. This link will expire in 1 hour.</p>
@@ -103,7 +105,7 @@ exports.sendForgotPasswordEmail = catchAsync(async (req, res, next) => {
       </tr>
       <tr>
         <td class="footer">
-          &copy; {{YEAR}} Your Store Name. All rights reserved.
+          &copy; ${new Date().getFullYear()} ByteCart. All rights reserved.
         </td>
       </tr>
     </table>
