@@ -17,7 +17,7 @@ exports.sendSuccessCheckoutEmail = catchAsync(async (req, res, next) => {
       price += acc + product.productDiscount;
     }
     if (product.quantity < 5) {
-      price += acc + +product.product.price.name.split('$')[1];
+      price += acc + +product.product.price;
     }
     return price;
   }, 0);
