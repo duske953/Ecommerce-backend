@@ -1,23 +1,23 @@
-const mongoose = require("mongoose");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
-const Cryptr = require("cryptr");
-const createError = require("http-errors");
-const date = require("date-and-time");
-const sendEmail = require("../utils/sendEmail");
-const randomToken = require("rand-token");
-const { v4: uuidv4 } = require("uuid");
+const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const Cryptr = require('cryptr');
+const createError = require('http-errors');
+const date = require('date-and-time');
+const sendEmail = require('../utils/sendEmail');
+const randomToken = require('rand-token');
+const { v4: uuidv4 } = require('uuid');
 const cryptr = new Cryptr(process.env.CRYPT_SECRET);
 const userSchema = new mongoose.Schema({
   Name: {
     type: String,
-    required: [true, "Your name is required"],
+    required: [true, 'Your name is required'],
     trim: true,
   },
   Email: {
     type: String,
-    required: [true, "Your email address is required"],
-    unique: [true, "A user with your email already exists"],
+    required: [true, 'Your email address is required'],
+    unique: [true, 'A user with your email already exists'],
     trim: true,
     lowercase: true,
     validate: {
@@ -36,21 +36,21 @@ const userSchema = new mongoose.Schema({
 
   Password: {
     type: String,
-    required: [true, "Password is required"],
-    minLength: [8, "your password must be at lease 8 characters long"],
+    required: [true, 'Password is required'],
+    minLength: [8, 'your password must be at lease 8 characters long'],
     trim: true,
     select: false,
   },
 
   PasswordConfirm: {
     type: String,
-    required: [true, "plese confirm your password"],
+    required: [true, 'plese confirm your password'],
     trim: true,
     validate: {
       validator(v) {
         return v === this.Password;
       },
-      message: (props) => "The passwords given do not match",
+      message: (props) => 'The passwords given do not match',
     },
   },
   createdAt: {
@@ -76,11 +76,11 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 
-  products: [
+  productsInCart: [
     {
-      products: {
+      product: {
         type: mongoose.Schema.ObjectId,
-        ref: "product",
+        ref: 'product',
       },
       productPaid: {
         type: Boolean,
@@ -126,32 +126,32 @@ function returnHtml(msg) {
   return htmlBody;
 }
 
-userSchema.pre("save", async function (next) {
-  if (!this.isDirectModified("Password")) return next();
+userSchema.pre('save', async function (next) {
+  if (!this.isDirectModified('Password')) return next();
   this.Password = await bcrypt.hash(this.Password, 12);
   this.PasswordConfirm = undefined;
   next();
 });
 
-userSchema.pre("save", async function (next) {
-  if (!this.$isNew && this.isDirectModified("Email")) {
+userSchema.pre('save', async function (next) {
+  if (!this.$isNew && this.isDirectModified('Email')) {
     this.active = false;
   }
   next();
 });
 
-userSchema.method("verifyPassword", async function (password, hashedPassword) {
+userSchema.method('verifyPassword', async function (password, hashedPassword) {
   return await bcrypt.compare(password, hashedPassword);
 });
 
-userSchema.method("confirmAccount", async function () {
+userSchema.method('confirmAccount', async function () {
   try {
     this.EmailConfirmToken = randomToken.generate(100);
     const token = cryptr.encrypt(this.EmailConfirmToken);
     this.EmailTokenExpires = date.addMinutes(new Date(), 10);
     await sendEmail(
       this.Email,
-      "OEK needs you to verify your email address",
+      'OEK needs you to verify your email address',
       returnHtml(
         `Dear ${this.Name}, <br> <br>  Thank you for signing up for our ecommerce website! We are excited to have you as a new member. <br> <br> To complete your registration, please confirm your email address by clicking on the link below: <br> <br>
         <a style ="color:#333; text-decoration:none;font-size:18px; display:inline-block; border-radius:9px; color:#fff; padding:0.9rem 1.4rem; background-color:#1c7ed6" href="https://tech-freak.vercel.app/users/activate/${token}">Confirm Account</a> 
@@ -160,19 +160,19 @@ userSchema.method("confirmAccount", async function () {
     );
   } catch (err) {
     if (err.errno === -3008)
-      throw createError(400, "Something went wrong with this request");
+      throw createError(400, 'Something went wrong with this request');
     throw err;
   }
 });
 
-userSchema.method("forgotPassword", async function () {
+userSchema.method('forgotPassword', async function () {
   const now = new Date();
   this.passwordResetToken = randomToken.generate(100);
   const token = cryptr.encrypt(this.passwordResetToken);
   this.passwordExpiresDate = date.addMinutes(now, 10);
   await sendEmail(
     this.Email,
-    "Reset your password",
+    'Reset your password',
     returnHtml(
       `Dear ${
         this.Name
@@ -184,6 +184,6 @@ userSchema.method("forgotPassword", async function () {
   );
 });
 
-const user = new mongoose.model("user", userSchema);
+const user = new mongoose.model('user', userSchema);
 
 module.exports = user;

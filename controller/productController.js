@@ -38,16 +38,15 @@ exports.getProducts = catchAsync(async (req, res, next) => {
 
 exports.getProduct = catchAsync(async (req, res, next) => {
   const product = await products.findOne({
-    _id: req.params.id,
     asin: req.params.asin,
   });
   if (!product)
     return next(createError(404, 'We could not find the requested product'));
-  const id = product.categories[0].id;
+  const id = product.categories.id;
 
   const similarProduct = await products.aggregate([
     {
-      $match: { categories: { $elemMatch: { id } } },
+      $match: { 'categories.id': id },
     },
     {
       $sample: { size: 8 },
@@ -68,17 +67,17 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
     );
 
   const foundProduct = await user.findOne({
-    products: { $elemMatch: { products: req.body.id } },
+    productsInCart: { $elemMatch: { productsInCart: req.body.id } },
   });
 
   if (foundProduct) return next(createError(400, 'Product already in cart...'));
 
-  const addedProduct = await user.findOneAndUpdate(
+  await user.findOneAndUpdate(
     { _id: req.user.id },
     {
       $push: {
         products: {
-          $each: [{ products: req.body.id, productPaid: false }],
+          $each: [{ productsInCart: req.body.id, productPaid: false }],
           $position: 0,
         },
       },
@@ -106,7 +105,7 @@ exports.deleteProductFromCart = catchAsync(async (req, res, next) => {
     { _id: req.user.id },
     {
       $pull: {
-        products: {
+        productsInCart: {
           _id: req.body.id,
         },
       },
@@ -138,7 +137,7 @@ exports.getProductsFromCart = catchAsync(async (req, res, next) => {
   const product = await user
     .findById(req.user.id)
     .populate('productsInCart.product')
-    .select('products');
+    .select('productsInCart');
   sendResponse(res, 200, 'products from cart loaded', { product });
 });
 
