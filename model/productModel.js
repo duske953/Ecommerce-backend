@@ -1,11 +1,11 @@
-const axios = require("axios");
-const mongoose = require("mongoose");
-const Crawler = require("crawler");
+const axios = require('axios');
+const mongoose = require('mongoose');
+const Crawler = require('crawler');
 
 const productSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, "Product must have a name"],
+    required: [true, 'Product must have a name'],
     unique: true,
   },
   details: {
@@ -37,9 +37,9 @@ const productSchema = new mongoose.Schema({
 //   include_html: "false",
 // };
 
-productSchema.index({ title: "text" });
+productSchema.index({ title: 'text' });
 
-const product = mongoose.model("product", productSchema);
+const product = mongoose.model('product-v1', productSchema);
 
 // (async function () {
 //   console.log("working...");

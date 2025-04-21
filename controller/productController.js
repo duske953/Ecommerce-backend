@@ -18,7 +18,7 @@ function sendResponse(res, code, message, data) {
 exports.getProducts = catchAsync(async (req, res, next) => {
   const headphones = await products.aggregate([
     {
-      $match: { 'categories.id': 16225007015 },
+      $match: { categories: { $elemMatch: { id: '172541' } } },
     },
     {
       $sample: { size: 8 },
@@ -27,7 +27,7 @@ exports.getProducts = catchAsync(async (req, res, next) => {
 
   const laptops = await products.aggregate([
     {
-      $match: { 'categories.id': 16225007012 },
+      $match: { categories: { $elemMatch: { id: '13896617011' } } },
     },
     {
       $sample: { size: 8 },
@@ -38,15 +38,16 @@ exports.getProducts = catchAsync(async (req, res, next) => {
 
 exports.getProduct = catchAsync(async (req, res, next) => {
   const product = await products.findOne({
+    _id: req.params.id,
     asin: req.params.asin,
   });
   if (!product)
     return next(createError(404, 'We could not find the requested product'));
-  const id = product.categories.id;
+  const id = product.categories[0].id;
 
   const similarProduct = await products.aggregate([
     {
-      $match: { 'categories.id': id },
+      $match: { categories: { $elemMatch: { id } } },
     },
     {
       $sample: { size: 8 },
@@ -67,17 +68,17 @@ exports.addProductToCart = catchAsync(async (req, res, next) => {
     );
 
   const foundProduct = await user.findOne({
-    productsInCart: { $elemMatch: { productsInCart: req.body.id } },
+    products: { $elemMatch: { products: req.body.id } },
   });
 
   if (foundProduct) return next(createError(400, 'Product already in cart...'));
 
-  await user.findOneAndUpdate(
+  const addedProduct = await user.findOneAndUpdate(
     { _id: req.user.id },
     {
       $push: {
         products: {
-          $each: [{ productsInCart: req.body.id, productPaid: false }],
+          $each: [{ products: req.body.id, productPaid: false }],
           $position: 0,
         },
       },
@@ -105,7 +106,7 @@ exports.deleteProductFromCart = catchAsync(async (req, res, next) => {
     { _id: req.user.id },
     {
       $pull: {
-        productsInCart: {
+        products: {
           _id: req.body.id,
         },
       },
@@ -136,8 +137,8 @@ exports.searchProduct = catchAsync(async (req, res, next) => {
 exports.getProductsFromCart = catchAsync(async (req, res, next) => {
   const product = await user
     .findById(req.user.id)
-    .populate('productsInCart.product')
-    .select('productsInCart');
+    .populate('products.products')
+    .select('products');
   sendResponse(res, 200, 'products from cart loaded', { product });
 });
 
@@ -149,7 +150,7 @@ exports.getProductsFromCategory = catchAsync(async (req, res, next) => {
 
   const foundProducts = await products
     .find({
-      $match: { 'categories.id': +req.query.id },
+      categories: { $elemMatch: { id: req.query.id } },
     })
     .limit(8)
     .skip(+(req.query.page - 1) * 8);
