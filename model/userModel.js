@@ -76,9 +76,9 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 
-  productsInCart: [
+  products: [
     {
-      product: {
+      products: {
         type: mongoose.Schema.ObjectId,
         ref: 'product',
       },
@@ -184,6 +184,6 @@ userSchema.method('forgotPassword', async function () {
   );
 });
 
-const user = new mongoose.model('user', userSchema);
+const user = new mongoose.model('user-v1', userSchema);
 
 module.exports = user;
