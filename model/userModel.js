@@ -80,7 +80,7 @@ const userSchema = new mongoose.Schema({
     {
       products: {
         type: mongoose.Schema.ObjectId,
-        ref: 'product',
+        ref: 'product-v1',
       },
       productPaid: {
         type: Boolean,
