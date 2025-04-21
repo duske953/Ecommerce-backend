@@ -137,7 +137,7 @@ exports.searchProduct = catchAsync(async (req, res, next) => {
 exports.getProductsFromCart = catchAsync(async (req, res, next) => {
   const product = await user
     .findById(req.user.id)
-    .populate('products.products')
+    .populate('productsInCart.product')
     .select('products');
   sendResponse(res, 200, 'products from cart loaded', { product });
 });
