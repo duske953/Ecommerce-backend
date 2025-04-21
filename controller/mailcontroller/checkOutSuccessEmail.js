@@ -101,7 +101,10 @@ exports.sendSuccessCheckoutEmail = catchAsync(async (req, res, next) => {
             </tr>
             <tr>
               <td><strong>Expected Delivery:</strong></td>
-              <td style="text-align: right;">${date.addDays(now, 14)}</td>
+              <td style="text-align: right;">${date.format(
+                date.addDays(now, 14),
+                'ddd, MMM DD YYYY'
+              )}</td>
             </tr>
           </table>
 
