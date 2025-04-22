@@ -2,6 +2,7 @@ const users = require('../model/userModel');
 const catchAsync = require('../utils/catchAsync');
 const createError = require('http-errors');
 const products = require('../model/productModel');
+const { signJwt } = require('../utils/signJwt');
 // const multer = require("multer");
 // const { GridFsStorage } = require("multer-gridfs-storage");
 const { v4: uuidv4 } = require('uuid');
