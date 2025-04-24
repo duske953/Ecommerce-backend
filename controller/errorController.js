@@ -26,7 +26,7 @@ function errorController(err, req, res, next) {
     if (error.expose === false)
       return res.status(errCode).json({
         status: error.status,
-        message: error.message,
+        message: 'something went wrong',
       });
     return res.status(errCode).json({
       status: error.status,
