@@ -5,7 +5,7 @@
   "author": "Eloho Kennedy",
   "main": "app.js",
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "proxy": "http://localhost:3000",
   "scripts": {
