@@ -48,7 +48,7 @@ app.use(
     origin: `${
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:5173'
-        : 'https://tech-freak.vercel.app'
+        : 'https://bytecart.eloho.dev'
     }`,
     methods: ['GET', 'POST', 'DELETE', 'PATCH'],
   })
